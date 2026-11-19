@@ -43,7 +43,7 @@ export function AlertaForm({ setores, onCreated }: AlertaFormProps) {
       <h2 className="font-display text-lg font-bold">Abrir alerta</h2>
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField id="alerta-setor" label="Setor" error={errors.idSetor && errors.idSetor.message}>
-          <select id="alerta-setor" className="input" {...register('idSetor', { required: 'Escolha o setor do alerta.' })}>
+          <select id="alerta-setor" className="field" {...register('idSetor', { required: 'Escolha o setor do alerta.' })}>
             <option value="">Selecione</option>
             {setores.map((setor) => (
               <option key={setor.id} value={setor.id}>
@@ -53,7 +53,7 @@ export function AlertaForm({ setores, onCreated }: AlertaFormProps) {
           </select>
         </FormField>
         <FormField id="alerta-nivel" label="Nível" error={errors.nivel && errors.nivel.message}>
-          <select id="alerta-nivel" className="input" {...register('nivel', { required: 'Escolha o nível.' })}>
+          <select id="alerta-nivel" className="field" {...register('nivel', { required: 'Escolha o nível.' })}>
             <option value="">Selecione</option>
             <option value="AMARELO">Amarelo</option>
             <option value="LARANJA">Laranja</option>

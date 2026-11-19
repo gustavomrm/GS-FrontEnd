@@ -93,7 +93,7 @@ export function FilaAlerta({ alerta }: FilaAlertaProps) {
             <p className="text-sm text-slate-600">Todos os moradores deste setor já estão na fila.</p>
           ) : (
             <div className="flex flex-col gap-3 sm:flex-row">
-              <select id="morador" className="input" value={idMorador} onChange={(event) => setIdMorador(event.target.value)}>
+              <select id="morador" className="field" value={idMorador} onChange={(event) => setIdMorador(event.target.value)}>
                 <option value="">Selecione um morador</option>
                 {elegiveis.map((morador) => (
                   <option key={morador.id} value={morador.id}>
@@ -117,7 +117,7 @@ export function FilaAlerta({ alerta }: FilaAlertaProps) {
           <label htmlFor="filtro" className="text-sm font-semibold">
             Filtrar por situação
           </label>
-          <select id="filtro" className="input sm:w-64" value={filtro} onChange={(event) => setFiltro(event.target.value)}>
+          <select id="filtro" className="field sm:w-64" value={filtro} onChange={(event) => setFiltro(event.target.value)}>
             <option value="TODAS">Todas</option>
             {situacoes.map((situacao) => (
               <option key={situacao} value={situacao}>

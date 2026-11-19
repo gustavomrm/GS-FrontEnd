@@ -30,7 +30,7 @@ export function ConfirmarPage() {
         <FormField id="codigo" label="Código de confirmação" error={errors.codigo && errors.codigo.message}>
           <input
             id="codigo"
-            className="input"
+            className="field"
             {...register('codigo', {
               required: 'Digite o código.',
               pattern: { value: /^[A-Za-z0-9-]{4,12}$/, message: 'O código tem de 4 a 12 letras, números ou hífen.' },

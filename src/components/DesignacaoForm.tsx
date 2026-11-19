@@ -66,7 +66,7 @@ export function DesignacaoForm({ idAtendimento, onSaved }: DesignacaoFormProps) 
     <form onSubmit={handleSubmit} noValidate className="card flex flex-col gap-4">
       <h2 className="font-display text-lg font-bold">Designar transporte</h2>
       <FormField id="veiculo" label="Veículo">
-        <select id="veiculo" name="veiculo" className="input">
+        <select id="veiculo" name="veiculo" className="field">
           <option value="">Selecione</option>
           {veiculosLivres.map((veiculo) => (
             <option key={veiculo.id} value={veiculo.id}>
@@ -76,7 +76,7 @@ export function DesignacaoForm({ idAtendimento, onSaved }: DesignacaoFormProps) 
         </select>
       </FormField>
       <FormField id="destino" label="Destino">
-        <select id="destino" name="destino" className="input">
+        <select id="destino" name="destino" className="field">
           <option value="">Selecione</option>
           {destinosLivres.map((destino) => (
             <option key={destino.id} value={destino.id}>
@@ -86,7 +86,7 @@ export function DesignacaoForm({ idAtendimento, onSaved }: DesignacaoFormProps) 
         </select>
       </FormField>
       <FormField id="responsavel" label="Responsável">
-        <input id="responsavel" name="responsavel" className="input" />
+        <input id="responsavel" name="responsavel" className="field" />
       </FormField>
       {erro && <Feedback type="error" message={erro} />}
       <button type="submit" className="btn-primary self-start" disabled={sending}>
