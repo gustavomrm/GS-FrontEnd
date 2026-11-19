@@ -1,4 +1,4 @@
-import type { EstadoAtendimento, Morador, MotivoPendencia } from '@/types/api'
+import type { EstadoAtendimento, MoradorDaFila, MotivoPendencia } from '@/types/api'
 
 const dataHora = new Intl.DateTimeFormat('pt-BR', {
   dateStyle: 'short',
@@ -34,17 +34,13 @@ export const proximoEstado: Partial<Record<EstadoAtendimento, EstadoAtendimento>
   EMBARCADA: 'CHEGADA_CONFIRMADA',
 }
 
-export function necessidades(morador: Pick<Morador, 'precisaMaca' | 'precisaCadeira' | 'qtAcompanhante'>) {
+export function necessidades(morador: MoradorDaFila) {
   const lista: string[] = []
   if (morador.precisaMaca) lista.push('Maca')
-  if (morador.precisaCadeira) lista.push('Cadeira de rodas')
+  if (morador.usaCadeiraRodas) lista.push('Cadeira de rodas')
   if (morador.qtAcompanhante > 0) {
     lista.push(`${morador.qtAcompanhante} acompanhante${morador.qtAcompanhante > 1 ? 's' : ''}`)
   }
   if (lista.length === 0) lista.push('Assento comum')
   return lista
-}
-
-export function novoIdEvento() {
-  return crypto.randomUUID()
 }

@@ -25,12 +25,12 @@ export function MoradoresPage() {
 
   async function handleRemover(morador: Morador) {
     if (!window.confirm(`Remover ${morador.nome}? Esta ação não pode ser desfeita.`)) return
-    setRemovendo(morador.idMorador)
+    setRemovendo(morador.id)
     setFeedback(null)
     try {
-      await deleteMorador(morador.idMorador)
+      await deleteMorador(morador.id)
       setFeedback({ type: 'success', message: `${morador.nome} removido da central.` })
-      if (editando?.idMorador === morador.idMorador) setEditando(null)
+      if (editando?.id === morador.id) setEditando(null)
       moradores.reload()
     } catch (err) {
       setFeedback({ type: 'error', message: (err as Error).message })
@@ -38,8 +38,6 @@ export function MoradoresPage() {
       setRemovendo(null)
     }
   }
-
-  const nomeSetor = (id: number) => setores.data?.find((s) => s.idSetor === id)?.nome ?? `Setor ${id}`
 
   return (
     <div className="container-page">
@@ -75,15 +73,15 @@ export function MoradoresPage() {
           {!moradores.loading && !moradores.error && filtrados.length > 0 && (
             <ul className="flex flex-col gap-3">
               {filtrados.map((morador) => (
-                <li key={morador.idMorador} className="card flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                <li key={morador.id} className="card flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <h2 className="font-semibold">{morador.nome}</h2>
                     <p className="text-sm text-slate-600">
-                      {nomeSetor(morador.idSetor)} · {morador.logradouro}, {morador.numero}
+                      {morador.setor.nome} · {morador.endereco}
                     </p>
                     <p className="text-sm text-slate-600">{necessidades(morador).join(', ')}</p>
                     <p className="text-xs text-slate-500">
-                      Código {morador.codigoConfirmacao} · Confirmado em {formatDateTime(morador.dtConfirmacao)}
+                      {morador.dataConfirmacao ? `Confirmado em ${formatDateTime(morador.dataConfirmacao)}` : 'Aguardando confirmação'}
                     </p>
                   </div>
                   <div className="flex gap-2">
@@ -102,7 +100,7 @@ export function MoradoresPage() {
                       type="button"
                       className="btn-secondary px-3 text-red-700"
                       aria-label={`Remover ${morador.nome}`}
-                      disabled={removendo === morador.idMorador}
+                      disabled={removendo === morador.id}
                       onClick={() => handleRemover(morador)}
                     >
                       <Trash2 size={16} aria-hidden="true" />
@@ -114,15 +112,18 @@ export function MoradoresPage() {
           )}
         </section>
 
-        <MoradorForm
-          key={editando?.idMorador ?? 'novo'}
-          setores={setores.data ?? []}
-          editando={editando}
-          onSaved={() => {
-            moradores.reload()
-          }}
-          onCancel={() => setEditando(null)}
-        />
+        <div>
+          {setores.error && <StateMessage type="error" message={setores.error} onRetry={setores.reload} />}
+          <MoradorForm
+            key={editando?.id ?? 'novo'}
+            setores={setores.data ?? []}
+            editando={editando}
+            onSaved={() => {
+              moradores.reload()
+            }}
+            onCancel={() => setEditando(null)}
+          />
+        </div>
       </div>
     </div>
   )

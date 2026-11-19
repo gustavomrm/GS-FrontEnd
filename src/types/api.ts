@@ -18,30 +18,39 @@ export interface Setor {
   nivelRisco: string
 }
 
-export interface Morador {
-  idMorador: number
-  idSetor: number
-  nome: string
-  logradouro: string
-  numero: string
-  telefone: string
-  latitude: number
-  longitude: number
+export interface ConfirmacaoInput {
+  contato: string | null
   precisaMaca: boolean
-  precisaCadeira: boolean
+  usaCadeiraRodas: boolean
   qtAcompanhante: number
-  observacaoAcesso: string | null
-  codigoConfirmacao: string
-  dtConfirmacao: string | null
+  barreiraAcesso: string | null
 }
 
-export type MoradorInput = Omit<Morador, 'idMorador' | 'codigoConfirmacao' | 'dtConfirmacao'>
+export interface MoradorInput extends ConfirmacaoInput {
+  nome: string
+  endereco: string
+  idSetor: number
+  latitude: number
+  longitude: number
+}
 
-export interface ConfirmacaoInput {
-  precisaMaca: boolean
-  precisaCadeira: boolean
-  qtAcompanhante: number
-  observacaoAcesso: string | null
+export interface MoradorCadastroInput extends MoradorInput {
+  codigoConfirmacao: string
+}
+
+export interface MoradorDaFila extends ConfirmacaoInput {
+  id: number
+  nome: string
+  endereco: string
+}
+
+export interface Morador extends MoradorDaFila {
+  setor: { id: number; nome: string }
+  latitude: number
+  longitude: number
+  dataConfirmacao: string | null
+  situacaoCadastro: string
+  dataPedidoSaida: string | null
 }
 
 export interface Alerta {
@@ -50,17 +59,6 @@ export interface Alerta {
   nivel: string
   situacao: 'ABERTO' | 'ENCERRADO'
   dataAbertura: string
-}
-
-export interface MoradorDaFila {
-  id: number
-  nome: string
-  endereco: string
-  contato: string | null
-  precisaMaca: boolean
-  usaCadeiraRodas: boolean
-  qtAcompanhante: number
-  barreiraAcesso: string | null
 }
 
 export interface Veiculo {
@@ -98,5 +96,5 @@ export interface ApiErro {
   mensagem: string
   instante: string
   caminho: string
-  campos?: { campo: string; mensagem: string }[]
+  campos?: string[] | null
 }

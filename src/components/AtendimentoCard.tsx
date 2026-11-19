@@ -30,7 +30,7 @@ export const AtendimentoCard = memo(function AtendimentoCard({ atendimento }: At
       </p>
 
       <ul className="flex flex-wrap gap-1.5" aria-label="Necessidades">
-        {necessidades({ precisaMaca: morador.precisaMaca, precisaCadeira: morador.usaCadeiraRodas, qtAcompanhante: morador.qtAcompanhante }).map((item) => (
+        {necessidades(morador).map((item) => (
           <li key={item} className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">
             {item}
           </li>

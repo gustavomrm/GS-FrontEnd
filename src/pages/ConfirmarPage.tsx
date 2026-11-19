@@ -24,19 +24,19 @@ function BuscarCodigo() {
 
   return (
     <form
-      onSubmit={handleSubmit((v) => navigate(`/confirmar/${v.codigo.trim().toUpperCase()}`))}
+      onSubmit={handleSubmit((v) => navigate(`/confirmar/${encodeURIComponent(v.codigo.trim())}`))}
       noValidate
       className="card flex max-w-md flex-col gap-4"
     >
       <FormField id="codigo" label="Código de confirmação" error={errors.codigo?.message} hint="Código entregue pelo agente da Defesa Civil.">
         <input
           id="codigo"
-          className="input uppercase"
+          className="input"
           autoComplete="off"
           aria-invalid={!!errors.codigo}
           {...register('codigo', {
             required: 'Digite o código.',
-            pattern: { value: /^[A-Za-z0-9-]{4,12}$/, message: 'O código tem de 4 a 12 letras ou números.' },
+            validate: (v) => (v.trim().length >= 4 && v.trim().length <= 12) || 'Informe o código de 4 a 12 caracteres.',
           })}
         />
       </FormField>
@@ -48,10 +48,11 @@ function BuscarCodigo() {
 }
 
 interface ConfirmacaoValues {
+  contato: string
   precisaMaca: boolean
-  precisaCadeira: boolean
+  usaCadeiraRodas: boolean
   qtAcompanhante: string
-  observacaoAcesso: string
+  barreiraAcesso: string
   concordo: boolean
 }
 
@@ -64,10 +65,11 @@ function FormConfirmacao({ codigo, morador }: { codigo: string; morador: Morador
     formState: { errors, isSubmitting },
   } = useForm<ConfirmacaoValues>({
     defaultValues: {
+      contato: morador.contato ?? '',
       precisaMaca: morador.precisaMaca,
-      precisaCadeira: morador.precisaCadeira,
+      usaCadeiraRodas: morador.usaCadeiraRodas,
       qtAcompanhante: String(morador.qtAcompanhante),
-      observacaoAcesso: morador.observacaoAcesso ?? '',
+      barreiraAcesso: morador.barreiraAcesso ?? '',
       concordo: false,
     },
   })
@@ -76,13 +78,14 @@ function FormConfirmacao({ codigo, morador }: { codigo: string; morador: Morador
     setFeedback(null)
     try {
       const salvo = await confirmarNecessidades(codigo, {
+        contato: values.contato.trim() || null,
         precisaMaca: values.precisaMaca,
-        precisaCadeira: values.precisaCadeira,
+        usaCadeiraRodas: values.usaCadeiraRodas,
         qtAcompanhante: Number(values.qtAcompanhante),
-        observacaoAcesso: values.observacaoAcesso.trim() || null,
+        barreiraAcesso: values.barreiraAcesso.trim() || null,
       })
       setAtual(salvo)
-      setFeedback({ type: 'success', message: `Dados confirmados em ${formatDateTime(salvo.dtConfirmacao)}. Obrigado!` })
+      setFeedback({ type: 'success', message: `Dados confirmados em ${formatDateTime(salvo.dataConfirmacao)}. Obrigado!` })
     } catch (err) {
       setFeedback({ type: 'error', message: (err as Error).message })
     }
@@ -93,9 +96,13 @@ function FormConfirmacao({ codigo, morador }: { codigo: string; morador: Morador
       <div>
         <h2 className="font-display text-xl font-bold">{atual.nome}</h2>
         <p className="text-sm text-slate-600">
-          {atual.logradouro}, {atual.numero} · Última confirmação: {formatDateTime(atual.dtConfirmacao)}
+          {atual.endereco} · Última confirmação: {formatDateTime(atual.dataConfirmacao)}
         </p>
       </div>
+
+      <FormField id="contato" label="Contato (opcional)">
+        <input id="contato" maxLength={30} className="input" {...register('contato')} />
+      </FormField>
 
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-1 text-sm font-semibold">Para sair de casa, a pessoa precisa de:</legend>
@@ -103,7 +110,7 @@ function FormConfirmacao({ codigo, morador }: { codigo: string; morador: Morador
           <input type="checkbox" {...register('precisaMaca')} /> Maca
         </label>
         <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" {...register('precisaCadeira')} /> Cadeira de rodas
+          <input type="checkbox" {...register('usaCadeiraRodas')} /> Cadeira de rodas
         </label>
       </fieldset>
 
@@ -112,19 +119,20 @@ function FormConfirmacao({ codigo, morador }: { codigo: string; morador: Morador
           id="qtAcompanhante"
           type="number"
           min={0}
-          max={3}
+          max={5}
           className="input sm:w-32"
           aria-invalid={!!errors.qtAcompanhante}
           {...register('qtAcompanhante', {
             required: 'Informe 0 se ninguém for junto.',
             min: { value: 0, message: 'Não pode ser negativo.' },
-            max: { value: 3, message: 'No máximo 3 acompanhantes.' },
+            max: { value: 5, message: 'No máximo 5 acompanhantes.' },
+            validate: (v) => Number.isInteger(Number(v)) || 'Informe um número inteiro.',
           })}
         />
       </FormField>
 
-      <FormField id="observacaoAcesso" label="Existe alguma barreira na saída?" hint="Ex.: escada na entrada, corredor estreito">
-        <textarea id="observacaoAcesso" rows={3} className="input" {...register('observacaoAcesso')} />
+      <FormField id="barreiraAcesso" label="Existe alguma barreira na saída?" hint="Ex.: escada na entrada, corredor estreito">
+        <textarea id="barreiraAcesso" rows={3} maxLength={200} className="input" {...register('barreiraAcesso')} />
       </FormField>
 
       <label className="flex items-start gap-2 text-sm">
@@ -142,25 +150,29 @@ function FormConfirmacao({ codigo, morador }: { codigo: string; morador: Morador
   )
 }
 
+function ConsultaPorCodigo({ codigo }: { codigo: string }) {
+  const morador = useApi(() => getConfirmacao(codigo), [codigo])
+  if (morador.loading) return <StateMessage type="loading" message="Buscando cadastro..." />
+  if (morador.error) {
+    return (
+      <div className="flex max-w-md flex-col gap-4">
+        <StateMessage type="error" message={morador.error} onRetry={morador.reload} />
+        <BuscarCodigo />
+      </div>
+    )
+  }
+  return morador.data && <FormConfirmacao codigo={codigo} morador={morador.data} />
+}
+
 export function ConfirmarPage() {
   const { codigo } = useParams<{ codigo: string }>()
-  const morador = useApi(() => (codigo ? getConfirmacao(codigo) : Promise.resolve(null)), [codigo])
-
   return (
     <div className="container-page">
       <PageHeader
         title="Confirmar necessidades"
         description="Morador ou cuidador: revise os dados para que a equipe certa chegue no momento de uma evacuação."
       />
-      {!codigo && <BuscarCodigo />}
-      {codigo && morador.loading && <StateMessage type="loading" message="Buscando cadastro..." />}
-      {codigo && morador.error && (
-        <div className="flex max-w-md flex-col gap-4">
-          <StateMessage type="error" message={morador.error} />
-          <BuscarCodigo />
-        </div>
-      )}
-      {codigo && morador.data && <FormConfirmacao codigo={codigo} morador={morador.data} />}
+      {codigo ? <ConsultaPorCodigo key={codigo} codigo={codigo} /> : <BuscarCodigo />}
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import { body, http } from '@/services/http'
-import type { Morador, MoradorInput } from '@/types/api'
+import type { Morador, MoradorCadastroInput, MoradorInput } from '@/types/api'
 
 export function getMoradores() {
   return http<Morador[]>('/moradores')
@@ -9,7 +9,7 @@ export function getMoradorById(id: number) {
   return http<Morador>(`/moradores/${id}`)
 }
 
-export function createMorador(data: MoradorInput) {
+export function createMorador(data: MoradorCadastroInput) {
   return http<Morador>('/moradores', { method: 'POST', ...body(data) })
 }
 
