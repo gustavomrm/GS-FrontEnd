@@ -112,7 +112,7 @@ export function ConfirmacaoPage() {
             id="contato"
             type="tel"
             defaultValue={morador.contato ? morador.contato : ''}
-            className="input"
+            className="field"
             {...register('contato', {
               required: 'Informe um telefone.',
               pattern: { value: /^\(\d{2}\) \d{4,5}-\d{4}$/, message: 'Use o formato (11) 99999-0000.' },
@@ -140,7 +140,7 @@ export function ConfirmacaoPage() {
             id="qtAcompanhante"
             type="number"
             defaultValue={morador.qtAcompanhante}
-            className="input sm:w-32"
+            className="field sm:w-32"
             {...register('qtAcompanhante', {
               required: 'Informe 0 se ninguém for junto.',
               min: { value: 0, message: 'Não pode ser negativo.' },
@@ -153,7 +153,7 @@ export function ConfirmacaoPage() {
             id="barreiraAcesso"
             rows={3}
             defaultValue={morador.barreiraAcesso ? morador.barreiraAcesso : ''}
-            className="input"
+            className="field"
             {...register('barreiraAcesso')}
           />
         </FormField>

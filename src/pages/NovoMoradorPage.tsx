@@ -71,7 +71,7 @@ export function NovoMoradorPage() {
           <FormField id="nome" label="Nome (fictício)" error={errors.nome && errors.nome.message}>
             <input
               id="nome"
-              className="input"
+              className="field"
               {...register('nome', {
                 required: 'Informe o nome.',
                 minLength: { value: 3, message: 'O nome precisa ter ao menos 3 letras.' },
@@ -81,7 +81,7 @@ export function NovoMoradorPage() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <FormField id="idSetor" label="Setor" error={errors.idSetor && errors.idSetor.message}>
-              <select id="idSetor" className="input" {...register('idSetor', { required: 'Escolha o setor.' })}>
+              <select id="idSetor" className="field" {...register('idSetor', { required: 'Escolha o setor.' })}>
                 <option value="">Selecione</option>
                 {setores.map((setor) => (
                   <option key={setor.id} value={setor.id}>
@@ -96,7 +96,7 @@ export function NovoMoradorPage() {
                 id="contato"
                 type="tel"
                 placeholder="(11) 99999-0000"
-                className="input"
+                className="field"
                 {...register('contato', {
                   required: 'Informe um telefone.',
                   pattern: { value: /^\(\d{2}\) \d{4,5}-\d{4}$/, message: 'Use o formato (11) 99999-0000.' },
@@ -109,7 +109,7 @@ export function NovoMoradorPage() {
             <input
               id="endereco"
               placeholder="Rua A, 12"
-              className="input"
+              className="field"
               {...register('endereco', {
                 required: 'Informe o endereço.',
                 minLength: { value: 5, message: 'O endereço precisa ter ao menos 5 caracteres.' },
@@ -133,7 +133,7 @@ export function NovoMoradorPage() {
                 id="qtAcompanhante"
                 type="number"
                 defaultValue="0"
-                className="input"
+                className="field"
                 {...register('qtAcompanhante', {
                   required: 'Informe 0 se não houver.',
                   min: { value: 0, message: 'Não pode ser negativo.' },
@@ -149,7 +149,7 @@ export function NovoMoradorPage() {
               <input
                 id="codigoConfirmacao"
                 placeholder="MARIA01"
-                className="input"
+                className="field"
                 {...register('codigoConfirmacao', {
                   required: 'Crie um código para o cuidador.',
                   pattern: { value: /^[A-Za-z0-9-]{4,12}$/, message: 'Use de 4 a 12 letras, números ou hífen.' },
@@ -159,7 +159,7 @@ export function NovoMoradorPage() {
           </div>
 
           <FormField id="barreiraAcesso" label="Barreira de acesso (opcional)">
-            <input id="barreiraAcesso" placeholder="Escada na entrada" className="input" {...register('barreiraAcesso')} />
+            <input id="barreiraAcesso" placeholder="Escada na entrada" className="field" {...register('barreiraAcesso')} />
           </FormField>
 
           {erroApi && <Feedback type="error" message={erroApi} />}

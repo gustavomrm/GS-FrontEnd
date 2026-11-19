@@ -79,7 +79,7 @@ export function MoradoresPage() {
           <input
             id="busca"
             type="search"
-            className="input sm:max-w-sm"
+            className="field sm:max-w-sm"
             value={busca}
             onChange={(event) => setBusca(event.target.value)}
             placeholder="Digite um nome"

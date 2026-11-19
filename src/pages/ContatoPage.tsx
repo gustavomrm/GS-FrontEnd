@@ -57,7 +57,7 @@ export function ContatoPage() {
         <FormField id="nome" label="Nome" error={errors.nome && errors.nome.message}>
           <input
             id="nome"
-            className="input"
+            className="field"
             {...register('nome', {
               required: 'Informe seu nome.',
               minLength: { value: 3, message: 'O nome precisa ter ao menos 3 letras.' },
@@ -69,7 +69,7 @@ export function ContatoPage() {
           <input
             id="email"
             type="email"
-            className="input"
+            className="field"
             {...register('email', {
               required: 'Informe seu e-mail.',
               pattern: { value: /\S+@\S+\.\S+/, message: 'Digite um e-mail válido, como nome@dominio.com.' },
@@ -78,7 +78,7 @@ export function ContatoPage() {
         </FormField>
 
         <FormField id="assunto" label="Assunto" error={errors.assunto && errors.assunto.message}>
-          <select id="assunto" className="input" {...register('assunto', { required: 'Escolha um assunto.' })}>
+          <select id="assunto" className="field" {...register('assunto', { required: 'Escolha um assunto.' })}>
             <option value="">Selecione</option>
             <option value="duvida">Dúvida sobre o projeto</option>
             <option value="municipio">Interesse de município</option>
@@ -90,7 +90,7 @@ export function ContatoPage() {
           <textarea
             id="mensagem"
             rows={5}
-            className="input"
+            className="field"
             {...register('mensagem', {
               required: 'Escreva sua mensagem.',
               minLength: { value: 10, message: 'A mensagem precisa ter ao menos 10 caracteres.' },

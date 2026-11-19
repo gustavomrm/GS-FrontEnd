@@ -56,7 +56,7 @@ export function AnalisesPage() {
             <label htmlFor="alerta" className="text-sm font-semibold">
               Alerta
             </label>
-            <select id="alerta" className="input sm:w-96" value={idAlerta} onChange={(event) => setIdAlerta(Number(event.target.value))}>
+            <select id="alerta" className="field sm:w-96" value={idAlerta} onChange={(event) => setIdAlerta(Number(event.target.value))}>
               <option value={0}>Todos os alertas</option>
               {alertas.map((alerta) => (
                 <option key={alerta.id} value={alerta.id}>

@@ -11,6 +11,17 @@ export class HttpError extends Error {
   }
 }
 
+async function lerMensagemDeErro(response: Response): Promise<string> {
+  const erro: ApiErro | null = await response.json().catch(() => null)
+  if (erro && erro.campos && erro.campos.length > 0) {
+    return `${erro.mensagem}: ${erro.campos.join(', ')}`
+  }
+  if (erro && erro.mensagem) {
+    return erro.mensagem
+  }
+  return `Falha na requisição: ${response.status}`
+}
+
 export async function http<T>(path: string, options: RequestInit = {}): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
@@ -18,22 +29,16 @@ export async function http<T>(path: string, options: RequestInit = {}): Promise<
   })
 
   if (!response.ok) {
-    let mensagem = `Falha na requisição: ${response.status}`
-    try {
-      const erro: ApiErro = await response.json()
-      mensagem = erro.mensagem
-      if (erro.campos) {
-        mensagem = `${erro.mensagem}: ${erro.campos.join(', ')}`
-      }
-    } catch {
-      // a resposta de erro veio sem JSON, fica a mensagem padrão
-    }
-    throw new HttpError(response.status, mensagem)
-  }
-
-  if (response.status === 204) {
-    return null as T
+    throw new HttpError(response.status, await lerMensagemDeErro(response))
   }
 
   return response.json()
+}
+
+export async function httpDelete(path: string): Promise<void> {
+  const response = await fetch(`${API_URL}${path}`, { method: 'DELETE' })
+
+  if (!response.ok) {
+    throw new HttpError(response.status, await lerMensagemDeErro(response))
+  }
 }

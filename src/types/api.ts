@@ -111,8 +111,8 @@ export interface Designacao {
 }
 
 export interface RegistroMarco {
-  marco: Marco
-  motivoPendencia: MotivoPendencia | null
+  marco: string
+  motivoPendencia: string | null
 }
 
 export interface ApiErro {

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { registrarMarco } from '@/services/atendimentos'
 import { HttpError } from '@/services/http'
-import type { Atendimento, Marco, MotivoPendencia, SituacaoAtendimento } from '@/types/api'
+import type { Atendimento, Marco, SituacaoAtendimento } from '@/types/api'
 import { FormField } from '@/components/FormField'
 import { Feedback } from '@/components/Feedback'
 import { motivos, nomeMotivo, nomeSituacao } from '@/utils/format'
@@ -26,7 +26,7 @@ function nomeDoMarco(marco: Marco): string {
 
 export function EventoForm({ atendimento, onSaved }: EventoFormProps) {
   const opcoes = proximosMarcos(atendimento.situacao)
-  const [marco, setMarco] = useState<Marco>(opcoes[0])
+  const [marco, setMarco] = useState<string>(opcoes[0])
   const [motivo, setMotivo] = useState('')
   const [sending, setSending] = useState(false)
   const [erro, setErro] = useState('')
@@ -43,7 +43,7 @@ export function EventoForm({ atendimento, onSaved }: EventoFormProps) {
     try {
       const atualizado = await registrarMarco(atendimento.id, {
         marco: marco,
-        motivoPendencia: marco === 'PENDENCIA' ? (motivo as MotivoPendencia) : null,
+        motivoPendencia: marco === 'PENDENCIA' ? motivo : null,
       })
       setMotivo('')
       setMarco(proximosMarcos(atualizado.situacao)[0])
@@ -63,7 +63,7 @@ export function EventoForm({ atendimento, onSaved }: EventoFormProps) {
     <form onSubmit={handleSubmit} noValidate className="card flex flex-col gap-4">
       <h2 className="font-display text-lg font-bold">Registrar andamento</h2>
       <FormField id="marco" label="O que aconteceu?">
-        <select id="marco" className="input" value={marco} onChange={(event) => setMarco(event.target.value as Marco)}>
+        <select id="marco" className="field" value={marco} onChange={(event) => setMarco(event.target.value)}>
           {opcoes.map((opcao) => (
             <option key={opcao} value={opcao}>
               {nomeDoMarco(opcao)}
@@ -73,7 +73,7 @@ export function EventoForm({ atendimento, onSaved }: EventoFormProps) {
       </FormField>
       {marco === 'PENDENCIA' && (
         <FormField id="motivo" label="Motivo da pendência">
-          <select id="motivo" className="input" value={motivo} onChange={(event) => setMotivo(event.target.value)}>
+          <select id="motivo" className="field" value={motivo} onChange={(event) => setMotivo(event.target.value)}>
             <option value="">Selecione</option>
             {motivos.map((item) => (
               <option key={item} value={item}>

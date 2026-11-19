@@ -71,7 +71,7 @@ export function OperacaoPage() {
             </label>
             <select
               id="alerta-atual"
-              className="input"
+              className="field"
               value={idAlerta}
               onChange={(event) => setIdAlerta(Number(event.target.value))}
             >
