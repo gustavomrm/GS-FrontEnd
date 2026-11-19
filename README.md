@@ -24,11 +24,11 @@ Ajudar a Defesa Civil municipal a preparar e coordenar a evacuação de pessoas 
 | `/sobre` | Como funciona, ODS e limites |
 | `/faq` | Perguntas frequentes |
 | `/contato` | Formulário de contato validado |
-| `/operacao` | Painel: ativar alerta, fila, propostas de viagem e veículos |
-| `/atendimentos/:id` | Detalhe do atendimento, histórico e registro de andamento |
+| `/operacao` | Abertura de alertas, inclusão na fila e consulta dos veículos |
+| `/atendimentos/:id` | Designação de transporte, marcos e horários registrados |
 | `/moradores` | Cadastro, edição e remoção de moradores |
 | `/confirmar/:codigo` | Cuidador confirma as necessidades |
-| `/analises` | Resultados dos modelos de IA |
+| `/analises` | Contagem de atendimentos por situação e pendência, com filtro por alerta |
 
 ## Estrutura
 
@@ -56,20 +56,20 @@ No `.env`, `VITE_API_URL` é a URL da API Java (sem barra no final).
 
 ## Links
 
-- GitHub: https://github.com/USUARIO/REPOSITORIO
+- GitHub: https://github.com/gustavomrm/GS-FrontEnd
 - Vercel: https://SEU-PROJETO.vercel.app
-- API Java: https://SUA-API.onrender.com
+- API Java: https://saida-assistida-api.onrender.com
 - YouTube: https://youtu.be/VIDEO
 
 ## Integração com a API Java
 
 | Tela | Método e rota |
 | --- | --- |
-| Operação | `GET /alertas`, `POST /alertas`, `GET /alertas/{id}/atendimentos`, `GET /setores`, `GET /veiculos`, `POST /alertas/{id}/propostas`, `POST /viagens` |
-| Atendimento | `GET /atendimentos/{id}`, `GET /atendimentos/{id}/historico`, `POST /atendimentos/{id}/eventos` |
+| Operação | `GET /alertas`, `POST /alertas`, `GET /alertas/{id}/atendimentos`, `GET /setores`, `GET /veiculos`, `GET /alertas/{id}/elegiveis`, `POST /alertas/{id}/atendimentos` |
+| Atendimento | `GET /atendimentos/{id}`, `GET /veiculos`, `GET /destinos`, `PUT /atendimentos/{id}/designacao`, `PUT /atendimentos/{id}/marcos` |
 | Moradores | `GET /moradores`, `POST /moradores`, `PUT /moradores/{id}`, `DELETE /moradores/{id}` |
 | Confirmar | `GET /confirmacoes/{codigo}`, `PUT /confirmacoes/{codigo}` |
-| Análises | `POST /analises/impacto`, `POST /analises/agrupamento` |
+| Análises | `GET /alertas`, `GET /atendimentos` |
 
 Toda tela mostra carregamento, erro da requisição e ausência de dados. Os erros da API (400, 404, 409, 500) aparecem com a mensagem devolvida pelo backend.
 
@@ -77,6 +77,7 @@ Toda tela mostra carregamento, erro da requisição e ausência de dados. Os err
 
 | Nome | RM | Turma | GitHub |
 | --- | --- | --- | --- |
+| Carlos Eduardo Oliveira Silva | 569103 | 1TDSPV | ceduardoos |
 | Gustavo Mendes da Rosa Moreira | 565807 | 1TDSPV | gustavomrm |
 | Luiz Guedes | 565843 | 1TDSPV | oLuizGuedes |
 | Leonardo de Souza Bernardo | 570951 | 1TDSPV | bernardleonardo |

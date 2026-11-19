@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import type { Morador, MoradorInput, Setor } from '@/types/api'
+import { HttpError } from '@/services/http'
 import { createMorador, updateMorador } from '@/services/moradores'
 import { FormField } from '@/components/FormField'
 import { Feedback } from '@/components/Feedback'
@@ -15,30 +16,30 @@ interface MoradorFormProps {
 interface MoradorFormValues {
   nome: string
   idSetor: string
-  logradouro: string
-  numero: string
-  telefone: string
+  endereco: string
+  codigoConfirmacao: string
+  contato: string
   latitude: string
   longitude: string
   precisaMaca: boolean
-  precisaCadeira: boolean
+  usaCadeiraRodas: boolean
   qtAcompanhante: string
-  observacaoAcesso: string
+  barreiraAcesso: string
 }
 
 function toValues(morador: Morador | null): MoradorFormValues {
   return {
     nome: morador?.nome ?? '',
-    idSetor: morador ? String(morador.idSetor) : '',
-    logradouro: morador?.logradouro ?? '',
-    numero: morador?.numero ?? '',
-    telefone: morador?.telefone ?? '',
+    idSetor: morador ? String(morador.setor.id) : '',
+    endereco: morador?.endereco ?? '',
+    codigoConfirmacao: '',
+    contato: morador?.contato ?? '',
     latitude: morador ? String(morador.latitude) : '',
     longitude: morador ? String(morador.longitude) : '',
     precisaMaca: morador?.precisaMaca ?? false,
-    precisaCadeira: morador?.precisaCadeira ?? false,
+    usaCadeiraRodas: morador?.usaCadeiraRodas ?? false,
     qtAcompanhante: morador ? String(morador.qtAcompanhante) : '0',
-    observacaoAcesso: morador?.observacaoAcesso ?? '',
+    barreiraAcesso: morador?.barreiraAcesso ?? '',
   }
 }
 
@@ -46,15 +47,14 @@ function toInput(values: MoradorFormValues): MoradorInput {
   return {
     nome: values.nome.trim(),
     idSetor: Number(values.idSetor),
-    logradouro: values.logradouro.trim(),
-    numero: values.numero.trim(),
-    telefone: values.telefone.trim(),
+    endereco: values.endereco.trim(),
+    contato: values.contato.trim() || null,
     latitude: Number(values.latitude),
     longitude: Number(values.longitude),
     precisaMaca: values.precisaMaca,
-    precisaCadeira: values.precisaCadeira,
+    usaCadeiraRodas: values.usaCadeiraRodas,
     qtAcompanhante: Number(values.qtAcompanhante),
-    observacaoAcesso: values.observacaoAcesso.trim() || null,
+    barreiraAcesso: values.barreiraAcesso.trim() || null,
   }
 }
 
@@ -64,30 +64,29 @@ export function MoradorForm({ setores, editando, onSaved, onCancel }: MoradorFor
     register,
     handleSubmit,
     reset,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm<MoradorFormValues>({ defaultValues: toValues(editando) })
 
   async function onSubmit(values: MoradorFormValues) {
     setFeedback(null)
     try {
+      const dados = toInput(values)
+      const codigo = values.codigoConfirmacao.trim()
       const salvo = editando
-        ? await updateMorador(editando.idMorador, toInput(values))
-        : await createMorador(toInput(values))
+        ? await updateMorador(editando.id, dados)
+        : await createMorador({ ...dados, codigoConfirmacao: codigo })
       setFeedback({
         type: 'success',
         message: editando
           ? `Cadastro de ${salvo.nome} atualizado na central.`
-          : `${salvo.nome} cadastrado. Código de confirmação: ${salvo.codigoConfirmacao}.`,
+          : `${salvo.nome} cadastrado. Código de confirmação: ${codigo}.`,
       })
       if (!editando) reset(toValues(null))
       onSaved(salvo)
     } catch (err) {
-      const erro = err as Error & { campos?: { campo: string; mensagem: string }[] }
-      erro.campos?.forEach(({ campo, mensagem }) => {
-        if (campo in toValues(null)) setError(campo as keyof MoradorFormValues, { message: mensagem })
-      })
-      setFeedback({ type: 'error', message: erro.message })
+      const mensagem = err instanceof Error ? err.message : 'Falha ao salvar o morador.'
+      const campos = err instanceof HttpError ? err.campos ?? [] : []
+      setFeedback({ type: 'error', message: [mensagem, ...campos].join(' ') })
     }
   }
 
@@ -103,11 +102,12 @@ export function MoradorForm({ setores, editando, onSaved, onCancel }: MoradorFor
       <FormField id="nome" label="Nome (fictício)" error={errors.nome?.message}>
         <input
           id="nome"
+          maxLength={100}
           className="input"
           {...ariaField('nome')}
           {...register('nome', {
             required: 'Informe o nome.',
-            minLength: { value: 3, message: 'O nome precisa ter ao menos 3 letras.' },
+            validate: (v) => !!v.trim() || 'Informe o nome.',
           })}
         />
       </FormField>
@@ -123,28 +123,25 @@ export function MoradorForm({ setores, editando, onSaved, onCancel }: MoradorFor
             ))}
           </select>
         </FormField>
-        <FormField id="telefone" label="Telefone (fictício)" error={errors.telefone?.message} hint="Formato (11) 99999-0000">
-          <input
-            id="telefone"
-            type="tel"
-            className="input"
-            {...ariaField('telefone')}
-            {...register('telefone', {
-              required: 'Informe um telefone de contato.',
-              pattern: { value: /^\(\d{2}\) \d{4,5}-\d{4}$/, message: 'Use o formato (11) 99999-0000.' },
-            })}
-          />
+        <FormField id="contato" label="Contato (opcional)">
+          <input id="contato" maxLength={30} className="input" {...register('contato')} />
         </FormField>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-[2fr_1fr]">
-        <FormField id="logradouro" label="Logradouro" error={errors.logradouro?.message}>
-          <input id="logradouro" className="input" {...ariaField('logradouro')} {...register('logradouro', { required: 'Informe a rua.' })} />
+      <FormField id="endereco" label="Endereço completo" error={errors.endereco?.message}>
+        <input id="endereco" maxLength={200} className="input" {...ariaField('endereco')}
+          {...register('endereco', { validate: (v) => !!v.trim() || 'Informe o endereço.' })} />
+      </FormField>
+      {!editando && (
+        <FormField id="codigoConfirmacao" label="Código de confirmação" error={errors.codigoConfirmacao?.message}
+          hint="Escolha um código para entregar ao morador ou cuidador.">
+          <input id="codigoConfirmacao" className="input" maxLength={12} {...ariaField('codigoConfirmacao')}
+            {...register('codigoConfirmacao', {
+              required: 'Informe um código.',
+              pattern: { value: /^[A-Za-z0-9_-]{4,12}$/, message: 'Use 4 a 12 letras, números, hífens ou sublinhados.' },
+            })} />
         </FormField>
-        <FormField id="numero" label="Número" error={errors.numero?.message}>
-          <input id="numero" className="input" {...ariaField('numero')} {...register('numero', { required: 'Informe o número.' })} />
-        </FormField>
-      </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField id="latitude" label="Latitude" error={errors.latitude?.message}>
@@ -179,7 +176,7 @@ export function MoradorForm({ setores, editando, onSaved, onCancel }: MoradorFor
           <input type="checkbox" {...register('precisaMaca')} /> Precisa de maca
         </label>
         <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" {...register('precisaCadeira')} /> Usa cadeira de rodas
+          <input type="checkbox" {...register('usaCadeiraRodas')} /> Usa cadeira de rodas
         </label>
       </fieldset>
 
@@ -189,18 +186,19 @@ export function MoradorForm({ setores, editando, onSaved, onCancel }: MoradorFor
             id="qtAcompanhante"
             type="number"
             min={0}
-            max={3}
+            max={5}
             className="input"
             {...ariaField('qtAcompanhante')}
             {...register('qtAcompanhante', {
               required: 'Informe 0 se não houver.',
               min: { value: 0, message: 'Não pode ser negativo.' },
-              max: { value: 3, message: 'No máximo 3 acompanhantes.' },
+              max: { value: 5, message: 'No máximo 5 acompanhantes.' },
+              validate: (v) => Number.isInteger(Number(v)) || 'Informe um número inteiro.',
             })}
           />
         </FormField>
-        <FormField id="observacaoAcesso" label="Barreira de acesso (opcional)" hint="Ex.: escada na entrada, portão estreito">
-          <input id="observacaoAcesso" className="input" {...register('observacaoAcesso')} />
+        <FormField id="barreiraAcesso" label="Barreira de acesso (opcional)" hint="Ex.: escada na entrada, portão estreito">
+          <input id="barreiraAcesso" maxLength={200} className="input" {...register('barreiraAcesso')} />
         </FormField>
       </div>
 
