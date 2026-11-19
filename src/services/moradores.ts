@@ -1,22 +1,14 @@
-import { body, http } from '@/services/http'
-import type { Morador, MoradorCadastroInput, MoradorInput } from '@/types/api'
+import { http } from '@/services/http'
+import type { Morador, NovoMorador } from '@/types/api'
 
-export function getMoradores() {
+export function getMoradores(): Promise<Morador[]> {
   return http<Morador[]>('/moradores')
 }
 
-export function getMoradorById(id: number) {
-  return http<Morador>(`/moradores/${id}`)
+export function createMorador(data: NovoMorador): Promise<Morador> {
+  return http<Morador>('/moradores', { method: 'POST', body: JSON.stringify(data) })
 }
 
-export function createMorador(data: MoradorCadastroInput) {
-  return http<Morador>('/moradores', { method: 'POST', ...body(data) })
-}
-
-export function updateMorador(id: number, data: MoradorInput) {
-  return http<Morador>(`/moradores/${id}`, { method: 'PUT', ...body(data) })
-}
-
-export function deleteMorador(id: number) {
-  return http<void>(`/moradores/${id}`, { method: 'DELETE' })
+export function deleteMorador(id: number): Promise<null> {
+  return http<null>(`/moradores/${id}`, { method: 'DELETE' })
 }
