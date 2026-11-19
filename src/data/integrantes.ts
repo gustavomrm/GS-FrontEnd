@@ -2,6 +2,13 @@ import type { Integrante } from '@/types/integrante'
 
 export const integrantes: Integrante[] = [
   {
+    nome: 'Carlos Eduardo Oliveira Silva',
+    rm: '569103',
+    turma: '1TDSPV',
+    github: 'ceduardoos',
+    papel: 'API Java e integração do painel, atendimentos e análises',
+  },
+  {
     nome: 'Gustavo Mendes da Rosa Moreira',
     rm: '565807',
     turma: '1TDSPV',
