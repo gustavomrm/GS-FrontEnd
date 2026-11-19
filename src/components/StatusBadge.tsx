@@ -1,37 +1,29 @@
-import { memo } from 'react'
-import { AlertTriangle, CheckCircle2, Clock, Truck } from 'lucide-react'
-import type { EstadoAtendimento, MotivoPendencia } from '@/types/api'
-import { estadoLabel, motivoLabel } from '@/utils/format'
+import type { MotivoPendencia, SituacaoAtendimento } from '@/types/api'
+import { nomeMotivo, nomeSituacao } from '@/utils/format'
 
 interface StatusBadgeProps {
-  estado: EstadoAtendimento
-  motivo?: MotivoPendencia | null
+  situacao: SituacaoAtendimento
+  motivo: MotivoPendencia | null
 }
 
-const estilos: Record<EstadoAtendimento, string> = {
-  RECUSADO: 'bg-slate-200 text-slate-800 border-slate-300',
-  AGUARDANDO: 'bg-amber-100 text-amber-900 border-amber-300',
-  DESIGNADA: 'bg-sky-100 text-sky-900 border-sky-300',
-  EQUIPE_A_CAMINHO: 'bg-sky-100 text-sky-900 border-sky-300',
-  EMBARCADA: 'bg-indigo-100 text-indigo-900 border-indigo-300',
-  CHEGADA_CONFIRMADA: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+function corDaSituacao(situacao: SituacaoAtendimento): string {
+  if (situacao === 'AGUARDANDO') return 'border-amber-300 bg-amber-100 text-amber-900'
+  if (situacao === 'CHEGADA_CONFIRMADA') return 'border-emerald-300 bg-emerald-100 text-emerald-900'
+  if (situacao === 'RECUSADO') return 'border-slate-300 bg-slate-200 text-slate-800'
+  return 'border-sky-300 bg-sky-100 text-sky-900'
 }
 
-export const StatusBadge = memo(function StatusBadge({ estado, motivo }: StatusBadgeProps) {
-  const Icon = estado === 'CHEGADA_CONFIRMADA' ? CheckCircle2 : estado === 'AGUARDANDO' ? Clock : estado === 'RECUSADO' ? AlertTriangle : Truck
-
+export function StatusBadge({ situacao, motivo }: StatusBadgeProps) {
   return (
     <span className="inline-flex flex-wrap items-center gap-1.5">
-      <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${estilos[estado]}`}>
-        <Icon size={13} aria-hidden="true" />
-        {estadoLabel[estado]}
+      <span className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold ${corDaSituacao(situacao)}`}>
+        {nomeSituacao[situacao]}
       </span>
       {motivo && (
-        <span className="inline-flex items-center gap-1 rounded-full border border-red-300 bg-red-50 px-2.5 py-0.5 text-xs font-semibold text-red-800">
-          <AlertTriangle size={13} aria-hidden="true" />
-          {motivoLabel[motivo]}
+        <span className="rounded-full border border-red-300 bg-red-50 px-2.5 py-0.5 text-xs font-semibold text-red-800">
+          {nomeMotivo[motivo]}
         </span>
       )}
     </span>
   )
-})
+}

@@ -1,16 +1,14 @@
-import { body, http } from '@/services/http'
-import type { Atendimento, MotivoPendencia } from '@/types/api'
+import { http } from '@/services/http'
+import type { Atendimento, Designacao, RegistroMarco } from '@/types/api'
 
-export function getAtendimentoById(id: number) {
+export function getAtendimento(id: number): Promise<Atendimento> {
   return http<Atendimento>(`/atendimentos/${id}`)
 }
 
-export function designar(id: number, data: { idVeiculo: number; idDestino: number; responsavel: string }) {
-  return http<Atendimento>(`/atendimentos/${id}/designacao`, { method: 'PUT', ...body(data) })
+export function designarTransporte(id: number, data: Designacao): Promise<Atendimento> {
+  return http<Atendimento>(`/atendimentos/${id}/designacao`, { method: 'PUT', body: JSON.stringify(data) })
 }
 
-export type Marco = 'EQUIPE_A_CAMINHO' | 'EMBARCADA' | 'CHEGADA_CONFIRMADA' | 'PENDENCIA'
-
-export function registrarMarco(id: number, marco: Marco, motivoPendencia?: MotivoPendencia) {
-  return http<Atendimento>(`/atendimentos/${id}/marcos`, { method: 'PUT', ...body({ marco, motivoPendencia }) })
+export function registrarMarco(id: number, data: RegistroMarco): Promise<Atendimento> {
+  return http<Atendimento>(`/atendimentos/${id}/marcos`, { method: 'PUT', body: JSON.stringify(data) })
 }

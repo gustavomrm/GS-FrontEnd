@@ -1,39 +1,92 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PageHeader } from '@/components/PageHeader'
 import { StateMessage } from '@/components/StateMessage'
+import { Feedback } from '@/components/Feedback'
 import { AlertaForm } from '@/components/AlertaForm'
 import { FilaAlerta } from '@/components/FilaAlerta'
 import { VeiculosPanel } from '@/components/VeiculosPanel'
-import { useApi } from '@/hooks/useApi'
+import { useSetores } from '@/hooks/useSetores'
 import { getAlertas } from '@/services/alertas'
-import { getSetores } from '@/services/setores'
-import { getVeiculos } from '@/services/operacao'
+import type { Alerta } from '@/types/api'
 
 export function OperacaoPage() {
-  const alertas = useApi(getAlertas, [])
-  const setores = useApi(getSetores, [])
-  const veiculos = useApi(getVeiculos, [])
-  const [id, escolher] = useState<number | null>(null)
-  const lista = alertas.data ?? []
-  const atual = lista.find(a => a.id === id) ?? lista.find(a => a.situacao === 'ABERTO') ?? lista[0]
+  const { setores, loading: loadingSetores, error: errorSetores } = useSetores()
+  const [alertas, setAlertas] = useState<Alerta[]>([])
+  const [idAlerta, setIdAlerta] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [mensagem, setMensagem] = useState('')
+
+  useEffect(() => {
+    let active = true
+
+    getAlertas()
+      .then((data) => {
+        if (active) {
+          setAlertas(data)
+          if (data.length > 0) setIdAlerta(data[0].id)
+        }
+      })
+      .catch(() => {
+        if (active) setError('Não foi possível carregar os alertas.')
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [])
+
+  function handleCreated(alerta: Alerta) {
+    setAlertas((prev) => [alerta, ...prev])
+    setIdAlerta(alerta.id)
+    setMensagem(`Alerta #${alerta.id} aberto para ${alerta.setor.nome}.`)
+  }
+
+  const alertaAtual = alertas.find((alerta) => alerta.id === idAlerta)
 
   return (
     <div className="container-page flex flex-col gap-6">
-      <PageHeader title="Painel de operação" description="Abra um alerta, inclua moradores do setor e acompanhe a fila de atendimento." />
-      {setores.loading ? <StateMessage type="loading" message="Carregando setores..." /> : setores.error ?
-        <StateMessage type="error" message={setores.error} onRetry={setores.reload} /> :
-        <AlertaForm setores={setores.data ?? []} onCreated={a => { escolher(a.id); alertas.reload() }} />}
-      {alertas.loading ? <StateMessage type="loading" /> : alertas.error ?
-        <StateMessage type="error" message={alertas.error} onRetry={alertas.reload} /> : atual ? <>
-          <label htmlFor="alerta-atual" className="font-semibold">Alerta acompanhado</label>
-          <select id="alerta-atual" className="input" value={atual.id} onChange={e => escolher(Number(e.target.value))}>
-            {lista.map(a => <option key={a.id} value={a.id}>#{a.id} · {a.setor.nome} · {a.nivel} · {a.situacao}</option>)}
-          </select>
-          <FilaAlerta key={atual.id} alerta={atual} />
-        </> : <StateMessage type="empty" message="Nenhum alerta cadastrado." />}
-      {veiculos.loading ? <StateMessage type="loading" message="Carregando veículos..." /> : veiculos.error ?
-        <StateMessage type="error" message={veiculos.error} onRetry={veiculos.reload} /> :
-        veiculos.data?.length ? <VeiculosPanel veiculos={veiculos.data} /> : <StateMessage type="empty" message="Nenhum veículo cadastrado." />}
+      <PageHeader
+        title="Painel de operação"
+        description="Abra um alerta, inclua os moradores do setor na fila e acompanhe cada atendimento."
+      />
+
+      {errorSetores && <StateMessage type="error" message={errorSetores} />}
+      {!errorSetores && loadingSetores && <StateMessage type="loading" message="Carregando setores..." />}
+      {!errorSetores && !loadingSetores && <AlertaForm setores={setores} onCreated={handleCreated} />}
+      {mensagem && <Feedback type="success" message={mensagem} />}
+
+      {error && <StateMessage type="error" message={error} />}
+      {!error && loading && <StateMessage type="loading" message="Carregando alertas..." />}
+      {!error && !loading && alertas.length === 0 && <StateMessage type="empty" message="Nenhum alerta aberto ainda." />}
+
+      {!error && !loading && alertaAtual && (
+        <>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="alerta-atual" className="text-sm font-semibold">
+              Alerta acompanhado
+            </label>
+            <select
+              id="alerta-atual"
+              className="input"
+              value={idAlerta}
+              onChange={(event) => setIdAlerta(Number(event.target.value))}
+            >
+              {alertas.map((alerta) => (
+                <option key={alerta.id} value={alerta.id}>
+                  #{alerta.id} · {alerta.setor.nome} · {alerta.nivel} · {alerta.situacao}
+                </option>
+              ))}
+            </select>
+          </div>
+          <FilaAlerta alerta={alertaAtual} />
+        </>
+      )}
+
+      <VeiculosPanel />
     </div>
   )
 }
