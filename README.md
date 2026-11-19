@@ -58,7 +58,7 @@ A aplicação abre em http://localhost:5173 e já usa a API Java publicada. Para
 ## Links
 
 - GitHub: https://github.com/gustavomrm/GS-FrontEnd
-- Vercel: https://SEU-PROJETO.vercel.app
+- Vercel: https://gs-front-end-plum.vercel.app
 - API Java: https://saida-assistida-api.onrender.com
 - YouTube: https://youtu.be/VIDEO
 
@@ -85,7 +85,7 @@ Toda tela mostra carregamento, erro da requisição e ausência de dados. Nos fo
 
 ## Contato
 
-saidaassistida.fiap@gmail.com
+gustavo.mrm7@gmail.com
 
 ## Uso de IA
 
