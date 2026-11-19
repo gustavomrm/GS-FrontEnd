@@ -1,11 +1,22 @@
 import { Link } from 'react-router-dom'
-import { ClipboardCheck, Radio, Truck, UserCheck } from 'lucide-react'
 
 const passos = [
-  { icon: UserCheck, titulo: 'Confirmar necessidades', texto: 'Cuidador revisa maca, cadeira, acompanhante e barreiras de acesso.' },
-  { icon: Radio, titulo: 'Ativar alerta', texto: 'O operador abre o alerta do setor e vê quem precisa de apoio.' },
-  { icon: Truck, titulo: 'Alocar viagem compatível', texto: 'Veículo, equipe e destino precisam atender à necessidade informada.' },
-  { icon: ClipboardCheck, titulo: 'Confirmar chegada', texto: 'Só conta como concluído quando o destino registra a chegada.' },
+  {
+    titulo: 'Cadastrar e confirmar',
+    texto: 'O agente cadastra o morador e o cuidador confirma maca, cadeira de rodas, acompanhantes e barreiras de acesso.',
+  },
+  {
+    titulo: 'Abrir o alerta',
+    texto: 'O operador abre o alerta do setor e inclui na fila os moradores que precisam de apoio.',
+  },
+  {
+    titulo: 'Designar o transporte',
+    texto: 'Cada atendimento recebe um veículo, um destino e um responsável disponíveis.',
+  },
+  {
+    titulo: 'Confirmar a chegada',
+    texto: 'A equipe registra embarque e chegada. Só conta como concluído quando a chegada é confirmada.',
+  },
 ]
 
 export function HomePage() {
@@ -47,12 +58,13 @@ export function HomePage() {
       <section className="container-page">
         <h2 className="font-display text-2xl font-bold">A jornada em quatro passos</h2>
         <ol className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {passos.map(({ icon: Icon, titulo, texto }, index) => (
-            <li key={titulo} className="card">
-              <Icon className="text-teal-700" size={26} aria-hidden="true" />
-              <p className="mt-3 text-xs font-semibold text-slate-500">Passo {index + 1}</p>
-              <h3 className="font-display text-lg font-bold">{titulo}</h3>
-              <p className="mt-1 text-sm text-slate-600">{texto}</p>
+          {passos.map((passo, index) => (
+            <li key={passo.titulo} className="card">
+              <p className="flex h-9 w-9 items-center justify-center rounded-full bg-teal-100 font-display font-bold text-teal-800">
+                {index + 1}
+              </p>
+              <h3 className="mt-3 font-display text-lg font-bold">{passo.titulo}</h3>
+              <p className="mt-1 text-sm text-slate-600">{passo.texto}</p>
             </li>
           ))}
         </ol>
