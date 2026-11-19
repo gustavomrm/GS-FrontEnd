@@ -13,7 +13,7 @@ interface ContatoForm {
   mensagem: string
 }
 
-const EMAIL_EQUIPE = 'saidaassistida.fiap@gmail.com'
+const EMAIL_EQUIPE = 'gustavo.mrm7@gmail.com'
 
 export function ContatoPage() {
   const [nomeEnviado, setNomeEnviado] = useState('')
