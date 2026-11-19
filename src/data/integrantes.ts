@@ -16,7 +16,7 @@ export const integrantes: Integrante[] = [
     papel: 'Interface React, integração com a API e deploy na Vercel',
   },
   {
-    nome: 'Luiz Guedes',
+    nome: 'Luiz Gustavo Albuquerque B. Guedes',
     rm: '565843',
     turma: '1TDSPV',
     github: 'oLuizGuedes',

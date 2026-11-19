@@ -79,7 +79,7 @@ Toda tela mostra carregamento, erro da requisição e ausência de dados. Os err
 | --- | --- | --- | --- |
 | Carlos Eduardo Oliveira Silva | 569103 | 1TDSPV | ceduardoos |
 | Gustavo Mendes da Rosa Moreira | 565807 | 1TDSPV | gustavomrm |
-| Luiz Guedes | 565843 | 1TDSPV | oLuizGuedes |
+| Luiz Gustavo Albuquerque B. Guedes | 565843 | 1TDSPV | oLuizGuedes |
 | Leonardo de Souza Bernardo | 570951 | 1TDSPV | bernardleonardo |
 
 ## Contato
@@ -88,4 +88,4 @@ saidaassistida.fiap@gmail.com
 
 ## Uso de IA
 
-Usamos o Claude (Anthropic) como apoio para estruturar o projeto, revisar o código e explicar erros. Todo o código foi revisado e testado pelo grupo.
+Usamos o Claude (Anthropic) e o ChatGPT/Codex (OpenAI) como apoio para estruturar o projeto, revisar o código, integrar a API e explicar erros. Todo o código foi revisado e testado pelo grupo.
