@@ -31,7 +31,7 @@ export function IntegrantesPage() {
               rel="noreferrer"
               className="btn-secondary mt-auto self-start"
             >
-              <ExternalLink size={16} aria-hidden="true" /> GitHub: {pessoa.github}
+              <ExternalLink size={16} /> GitHub: {pessoa.github}
             </a>
           </li>
         ))}

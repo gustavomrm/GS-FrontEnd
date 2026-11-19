@@ -1,4 +1,4 @@
-export type EstadoAtendimento =
+export type SituacaoAtendimento =
   | 'AGUARDANDO'
   | 'DESIGNADA'
   | 'EQUIPE_A_CAMINHO'
@@ -6,59 +6,68 @@ export type EstadoAtendimento =
   | 'CHEGADA_CONFIRMADA'
   | 'RECUSADO'
 
-export type MotivoPendencia =
-  | 'SEM_CONTATO'
-  | 'ACESSO_IMPEDIDO'
-  | 'SEM_RECURSO'
-  | 'SAIDA_PROPRIA_PENDENTE'
+export type MotivoPendencia = 'SEM_CONTATO' | 'ACESSO_IMPEDIDO' | 'SEM_RECURSO' | 'SAIDA_PROPRIA_PENDENTE'
+
+export type Marco = 'EQUIPE_A_CAMINHO' | 'EMBARCADA' | 'CHEGADA_CONFIRMADA' | 'RECUSADO' | 'PENDENCIA'
+
+export type NivelAlerta = 'AMARELO' | 'LARANJA' | 'VERMELHO'
 
 export interface Setor {
-  idSetor: number
+  id: number
   nome: string
   nivelRisco: string
+  referencia: string
 }
 
-export interface ConfirmacaoInput {
+export interface Morador {
+  id: number
+  nome: string
+  endereco: string
   contato: string | null
+  latitude: number | null
+  longitude: number | null
   precisaMaca: boolean
   usaCadeiraRodas: boolean
   qtAcompanhante: number
   barreiraAcesso: string | null
+  setor: Setor
+  situacaoCadastro: string
+  dataConfirmacao: string | null
+  dataPedidoSaida: string | null
 }
 
-export interface MoradorInput extends ConfirmacaoInput {
+export interface NovoMorador {
+  idSetor: number
   nome: string
   endereco: string
-  idSetor: number
-  latitude: number
-  longitude: number
-}
-
-export interface MoradorCadastroInput extends MoradorInput {
+  contato: string
+  precisaMaca: boolean
+  usaCadeiraRodas: boolean
+  qtAcompanhante: number
+  barreiraAcesso: string
   codigoConfirmacao: string
 }
 
-export interface MoradorDaFila extends ConfirmacaoInput {
-  id: number
-  nome: string
-  endereco: string
-}
-
-export interface Morador extends MoradorDaFila {
-  setor: { id: number; nome: string }
-  latitude: number
-  longitude: number
-  dataConfirmacao: string | null
-  situacaoCadastro: string
-  dataPedidoSaida: string | null
+export interface Confirmacao {
+  contato: string
+  precisaMaca: boolean
+  usaCadeiraRodas: boolean
+  qtAcompanhante: number
+  barreiraAcesso: string
 }
 
 export interface Alerta {
   id: number
-  setor: { id: number; nome: string }
-  nivel: string
+  setor: Setor
+  nivel: NivelAlerta
   situacao: 'ABERTO' | 'ENCERRADO'
   dataAbertura: string
+  dataEncerramento: string | null
+}
+
+export interface NovoAlerta {
+  idSetor: number
+  nivel: NivelAlerta
 }
 
 export interface Veiculo {
@@ -74,14 +83,18 @@ export interface Veiculo {
 export interface Destino {
   id: number
   nome: string
+  tipo: string
+  endereco: string
+  qtVagas: number
+  acessivel: boolean
   disponivel: boolean
 }
 
 export interface Atendimento {
   id: number
   alerta: Alerta
-  morador: MoradorDaFila
-  situacao: EstadoAtendimento
+  morador: Morador
+  situacao: SituacaoAtendimento
   motivoPendencia: MotivoPendencia | null
   veiculo: Veiculo | null
   destino: Destino | null
@@ -91,10 +104,19 @@ export interface Atendimento {
   dataChegada: string | null
 }
 
+export interface Designacao {
+  idVeiculo: number
+  idDestino: number
+  responsavel: string
+}
+
+export interface RegistroMarco {
+  marco: Marco
+  motivoPendencia: MotivoPendencia | null
+}
+
 export interface ApiErro {
   status: number
   mensagem: string
-  instante: string
-  caminho: string
-  campos?: string[] | null
+  campos: string[] | null
 }

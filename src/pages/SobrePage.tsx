@@ -4,12 +4,12 @@ const blocos = [
   {
     titulo: 'Como a solução funciona',
     texto:
-      'A central guarda moradores, alertas, viagens e atendimentos em uma API Java ligada ao Oracle. Este site consulta e grava nessa API. Quando um alerta é ativado em um setor, cada morador elegível vira um atendimento que passa por estados até a chegada confirmada.',
+      'A central guarda moradores, alertas e atendimentos em uma API Java. Este site consulta e grava nessa API. Quando um alerta é aberto em um setor, o operador inclui os moradores do setor na fila e cada um vira um atendimento, que passa por etapas até a chegada confirmada.',
   },
   {
     titulo: 'Quem opera',
     texto:
-      'O operador da Defesa Civil decide; o sistema organiza e registra. Ele vê a fila do setor, as capacidades dos veículos e as pendências, e confirma uma viagem compatível.',
+      'O operador da Defesa Civil decide; o sistema organiza e registra. Ele vê a fila do setor, a capacidade dos veículos e as pendências, e designa um veículo e um destino disponíveis.',
   },
   {
     titulo: 'Quem é beneficiado',
@@ -23,7 +23,7 @@ const blocos = [
   },
 ]
 
-const estados = ['Aguardando', 'Viagem designada', 'Equipe a caminho', 'Embarcada', 'Chegada confirmada']
+const estados = ['Aguardando', 'Transporte designado', 'Equipe a caminho', 'Embarcada', 'Chegada confirmada']
 
 const ods = [
   { numero: 10, nome: 'Redução das desigualdades', texto: 'Prioriza quem tem mais dificuldade para sair sozinho.' },

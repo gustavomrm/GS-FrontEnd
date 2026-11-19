@@ -26,8 +26,10 @@ Ajudar a Defesa Civil municipal a preparar e coordenar a evacuação de pessoas 
 | `/contato` | Formulário de contato validado |
 | `/operacao` | Abertura de alertas, inclusão na fila e consulta dos veículos |
 | `/atendimentos/:id` | Designação de transporte, marcos e horários registrados |
-| `/moradores` | Cadastro, edição e remoção de moradores |
-| `/confirmar/:codigo` | Cuidador confirma as necessidades |
+| `/moradores` | Lista, busca e remoção de moradores |
+| `/moradores/novo` | Cadastro de morador com validação |
+| `/confirmar` | Cuidador digita o código de confirmação |
+| `/confirmar/:codigo` | Cuidador revisa e confirma as necessidades |
 | `/analises` | Contagem de atendimentos por situação e pendência, com filtro por alerta |
 
 ## Estrutura
@@ -36,23 +38,22 @@ Ajudar a Defesa Civil municipal a preparar e coordenar a evacuação de pessoas 
 src/
   components/   componentes reutilizáveis (FormField, StatusBadge, StateMessage, Feedback...)
   data/         textos fixos (integrantes, FAQ)
-  hooks/        useApi
+  hooks/        useSetores, useVeiculos e useDestinos
   layouts/      MainLayout com Header, Outlet e Footer
   pages/        uma página por rota
   services/     chamadas à API Java com fetch
   types/        tipos e interfaces da API
-  utils/        formatação de datas e rótulos
+  utils/        formatação de datas e nomes das situações
 ```
 
 ## Como executar
 
 ```bash
 npm install
-cp .env.example .env
 npm run dev
 ```
 
-No `.env`, `VITE_API_URL` é a URL da API Java (sem barra no final).
+A aplicação abre em http://localhost:5173 e já usa a API Java publicada. Para usar outra API, copie o `.env.example` para `.env` e troque o `VITE_API_URL` (sem barra no final).
 
 ## Links
 
@@ -67,11 +68,11 @@ No `.env`, `VITE_API_URL` é a URL da API Java (sem barra no final).
 | --- | --- |
 | Operação | `GET /alertas`, `POST /alertas`, `GET /alertas/{id}/atendimentos`, `GET /setores`, `GET /veiculos`, `GET /alertas/{id}/elegiveis`, `POST /alertas/{id}/atendimentos` |
 | Atendimento | `GET /atendimentos/{id}`, `GET /veiculos`, `GET /destinos`, `PUT /atendimentos/{id}/designacao`, `PUT /atendimentos/{id}/marcos` |
-| Moradores | `GET /moradores`, `POST /moradores`, `PUT /moradores/{id}`, `DELETE /moradores/{id}` |
+| Moradores | `GET /setores`, `GET /moradores`, `POST /moradores`, `DELETE /moradores/{id}` |
 | Confirmar | `GET /confirmacoes/{codigo}`, `PUT /confirmacoes/{codigo}` |
 | Análises | `GET /alertas`, `GET /atendimentos` |
 
-Toda tela mostra carregamento, erro da requisição e ausência de dados. Os erros da API (400, 404, 409, 500) aparecem com a mensagem devolvida pelo backend.
+Toda tela mostra carregamento, erro da requisição e ausência de dados. Nos formulários, os erros da API (400, 404, 409) aparecem com a mensagem devolvida pelo backend.
 
 ## Integrantes
 
@@ -79,8 +80,8 @@ Toda tela mostra carregamento, erro da requisição e ausência de dados. Os err
 | --- | --- | --- | --- |
 | Carlos Eduardo Oliveira Silva | 569103 | 1TDSPV | ceduardoos |
 | Gustavo Mendes da Rosa Moreira | 565807 | 1TDSPV | gustavomrm |
-| Luiz Gustavo Albuquerque B. Guedes | 565843 | 1TDSPV | oLuizGuedes |
 | Leonardo de Souza Bernardo | 570951 | 1TDSPV | bernardleonardo |
+| Luiz Gustavo Albuquerque B. Guedes | 565843 | 1TDSPV | oLuizGuedes |
 
 ## Contato
 

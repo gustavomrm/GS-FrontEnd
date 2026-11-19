@@ -2,32 +2,21 @@ import { AlertCircle, Inbox, Loader2 } from 'lucide-react'
 
 interface StateMessageProps {
   type: 'loading' | 'error' | 'empty'
-  message?: string
-  onRetry?: () => void
+  message: string
 }
 
-const padrao = {
-  loading: 'Carregando dados da central...',
-  error: 'Não foi possível carregar os dados.',
-  empty: 'Nenhum registro encontrado.',
-}
-
-export function StateMessage({ type, message, onRetry }: StateMessageProps) {
-  const Icon = type === 'loading' ? Loader2 : type === 'error' ? AlertCircle : Inbox
-  const cor = type === 'error' ? 'border-red-200 bg-red-50 text-red-800' : 'border-slate-200 bg-white text-slate-600'
-
+export function StateMessage({ type, message }: StateMessageProps) {
   return (
     <div
       role={type === 'error' ? 'alert' : 'status'}
-      className={`flex flex-col items-center gap-3 rounded-xl border px-4 py-8 text-center ${cor}`}
+      className={`flex flex-col items-center gap-3 rounded-xl border px-4 py-8 text-center ${
+        type === 'error' ? 'border-red-200 bg-red-50 text-red-800' : 'border-slate-200 bg-white text-slate-600'
+      }`}
     >
-      <Icon size={26} className={type === 'loading' ? 'animate-spin' : ''} aria-hidden="true" />
-      <p className="text-sm font-medium">{message ?? padrao[type]}</p>
-      {onRetry && (
-        <button type="button" className="btn-secondary" onClick={onRetry}>
-          Tentar de novo
-        </button>
-      )}
+      {type === 'loading' && <Loader2 size={26} className="animate-spin" />}
+      {type === 'error' && <AlertCircle size={26} />}
+      {type === 'empty' && <Inbox size={26} />}
+      <p className="text-sm font-medium">{message}</p>
     </div>
   )
 }
