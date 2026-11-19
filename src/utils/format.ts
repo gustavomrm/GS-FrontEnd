@@ -34,7 +34,7 @@ export const proximoEstado: Partial<Record<EstadoAtendimento, EstadoAtendimento>
   EMBARCADA: 'CHEGADA_CONFIRMADA',
 }
 
-export function necessidades(morador: Morador) {
+export function necessidades(morador: Pick<Morador, 'precisaMaca' | 'precisaCadeira' | 'qtAcompanhante'>) {
   const lista: string[] = []
   if (morador.precisaMaca) lista.push('Maca')
   if (morador.precisaCadeira) lista.push('Cadeira de rodas')
