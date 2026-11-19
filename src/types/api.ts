@@ -4,6 +4,7 @@ export type EstadoAtendimento =
   | 'EQUIPE_A_CAMINHO'
   | 'EMBARCADA'
   | 'CHEGADA_CONFIRMADA'
+  | 'RECUSADO'
 
 export type MotivoPendencia =
   | 'SEM_CONTATO'
@@ -44,52 +45,27 @@ export interface ConfirmacaoInput {
 }
 
 export interface Alerta {
-  idAlerta: number
-  idSetor: number
+  id: number
+  setor: { id: number; nome: string }
   nivel: string
-  situacao: 'ATIVO' | 'ENCERRADO'
-  dtAbertura: string
-  dtEncerramento: string | null
+  situacao: 'ABERTO' | 'ENCERRADO'
+  dataAbertura: string
 }
 
-export interface AlertaInput {
-  idSetor: number
-  nivel: string
-}
-
-export interface Atendimento {
-  idAtendimento: number
-  idAlerta: number
-  idViagem: number | null
-  morador: Morador
-  prioridade: number
-  estado: EstadoAtendimento
-  motivoPendencia: MotivoPendencia | null
-  versao: number
-}
-
-export interface Historico {
-  idHistorico: number
-  estadoAnterior: EstadoAtendimento | null
-  estadoNovo: EstadoAtendimento
-  motivoPendencia: MotivoPendencia | null
-  instante: string
-  responsavel: string
-  origem: 'CENTRAL' | 'CAMPO'
-}
-
-export interface EventoInput {
-  idEvento: string
-  estado: EstadoAtendimento
-  motivoPendencia: MotivoPendencia | null
-  responsavel: string
-  origem: 'CENTRAL'
-  versaoBase: number
+export interface MoradorDaFila {
+  id: number
+  nome: string
+  endereco: string
+  contato: string | null
+  precisaMaca: boolean
+  usaCadeiraRodas: boolean
+  qtAcompanhante: number
+  barreiraAcesso: string | null
 }
 
 export interface Veiculo {
-  idVeiculo: number
-  identificacao: string
+  id: number
+  nome: string
   tipo: string
   qtAssentos: number
   qtCadeiras: number
@@ -97,56 +73,24 @@ export interface Veiculo {
   disponivel: boolean
 }
 
-export interface Proposta {
-  idVeiculo: number
-  idEquipe: number
-  idDestino: number
-  veiculo: string
-  equipe: string
-  destino: string
-  idsAtendimento: number[]
-  justificativa: string
+export interface Destino {
+  id: number
+  nome: string
+  disponivel: boolean
 }
 
-export interface PropostaResultado {
-  propostas: Proposta[]
-  semRecurso: { idAtendimento: number; nome: string; motivo: string }[]
-}
-
-export interface Viagem {
-  idViagem: number
-  idVeiculo: number
-  idEquipe: number
-  idDestino: number
-  situacao: string
-}
-
-export interface ViagemInput {
-  idAlerta: number
-  idVeiculo: number
-  idEquipe: number
-  idDestino: number
-  idsAtendimento: number[]
-}
-
-export interface ImpactoInput {
-  municipio: string
-  tipoEvento: string
-  mes: number
-}
-
-export interface ImpactoResultado {
-  estimativa: number
-  unidade: string
-  versaoModelo: string
-  periodoTreinamento: string
-  aviso: string
-}
-
-export interface AgrupamentoResultado {
-  versaoModelo: string
-  aviso: string
-  grupos: { grupo: number; quantidade: number; idsAtendimento: number[] }[]
+export interface Atendimento {
+  id: number
+  alerta: Alerta
+  morador: MoradorDaFila
+  situacao: EstadoAtendimento
+  motivoPendencia: MotivoPendencia | null
+  veiculo: Veiculo | null
+  destino: Destino | null
+  responsavel: string | null
+  dataDesignacao: string | null
+  dataEmbarque: string | null
+  dataChegada: string | null
 }
 
 export interface ApiErro {

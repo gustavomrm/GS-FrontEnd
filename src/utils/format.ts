@@ -13,6 +13,7 @@ export function formatDateTime(iso: string | null) {
 }
 
 export const estadoLabel: Record<EstadoAtendimento, string> = {
+  RECUSADO: 'Recusado',
   AGUARDANDO: 'Aguardando',
   DESIGNADA: 'Viagem designada',
   EQUIPE_A_CAMINHO: 'Equipe a caminho',
