@@ -12,7 +12,7 @@ import { formatarData } from '@/utils/format'
 
 export function MoradoresPage() {
   const location = useLocation()
-  const avisoCadastro = location.state as string | null
+  const avisoCadastro: string | null = location.state
   const [moradores, setMoradores] = useState<Morador[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
