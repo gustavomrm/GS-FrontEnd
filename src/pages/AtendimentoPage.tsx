@@ -119,7 +119,7 @@ export function AtendimentoPage() {
 
       {mensagem && <Feedback type="success" message={mensagem} />}
       {atendimento.situacao === 'AGUARDANDO' && <DesignacaoForm idAtendimento={atendimento.id} onSaved={handleSaved} />}
-      {!encerrado && <EventoForm atendimento={atendimento} onSaved={handleSaved} />}
+      {!encerrado && <EventoForm key={atendimento.situacao} atendimento={atendimento} onSaved={handleSaved} />}
 
       <section className="card grid gap-3 text-sm sm:grid-cols-3">
         <div>
