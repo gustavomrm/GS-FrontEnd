@@ -2,20 +2,21 @@ import { lazy } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { MainLayout } from '@/layouts/MainLayout'
 import { HomePage } from '@/pages/HomePage'
+import { SobrePage } from '@/pages/SobrePage'
+import { FaqPage } from '@/pages/FaqPage'
+import { IntegrantesPage } from '@/pages/IntegrantesPage'
+import { ContatoPage } from '@/pages/ContatoPage'
+import { OperacaoPage } from '@/pages/OperacaoPage'
+import { MoradoresPage } from '@/pages/MoradoresPage'
+import { NovoMoradorPage } from '@/pages/NovoMoradorPage'
+import { ConfirmarPage } from '@/pages/ConfirmarPage'
+import { ConfirmacaoPage } from '@/pages/ConfirmacaoPage'
+import { AnalisesPage } from '@/pages/AnalisesPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 
-const lazyPage = <K extends string>(loader: () => Promise<Record<K, React.ComponentType>>, name: K) =>
-  lazy(() => loader().then((module) => ({ default: module[name] })))
-
-const SobrePage = lazyPage(() => import('@/pages/SobrePage'), 'SobrePage')
-const FaqPage = lazyPage(() => import('@/pages/FaqPage'), 'FaqPage')
-const IntegrantesPage = lazyPage(() => import('@/pages/IntegrantesPage'), 'IntegrantesPage')
-const ContatoPage = lazyPage(() => import('@/pages/ContatoPage'), 'ContatoPage')
-const OperacaoPage = lazyPage(() => import('@/pages/OperacaoPage'), 'OperacaoPage')
-const AtendimentoPage = lazyPage(() => import('@/pages/AtendimentoPage'), 'AtendimentoPage')
-const MoradoresPage = lazyPage(() => import('@/pages/MoradoresPage'), 'MoradoresPage')
-const ConfirmarPage = lazyPage(() => import('@/pages/ConfirmarPage'), 'ConfirmarPage')
-const AnalisesPage = lazyPage(() => import('@/pages/AnalisesPage'), 'AnalisesPage')
+const AtendimentoPage = lazy(() =>
+  import('@/pages/AtendimentoPage').then((module) => ({ default: module.AtendimentoPage })),
+)
 
 export default function App() {
   return (
@@ -30,8 +31,9 @@ export default function App() {
           <Route path="operacao" element={<OperacaoPage />} />
           <Route path="atendimentos/:id" element={<AtendimentoPage />} />
           <Route path="moradores" element={<MoradoresPage />} />
+          <Route path="moradores/novo" element={<NovoMoradorPage />} />
           <Route path="confirmar" element={<ConfirmarPage />} />
-          <Route path="confirmar/:codigo" element={<ConfirmarPage />} />
+          <Route path="confirmar/:codigo" element={<ConfirmacaoPage />} />
           <Route path="analises" element={<AnalisesPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>

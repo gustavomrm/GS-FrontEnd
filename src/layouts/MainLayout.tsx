@@ -11,16 +11,16 @@ export function MainLayout() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <a
-        href="#conteudo"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-30 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2"
-      >
-        Pular para o conteúdo
-      </a>
       <Header />
-      <main id="conteudo" className="flex-1">
+      <main className="flex-1">
         <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[location.pathname]}>
-          <Suspense fallback={<div className="container-page"><StateMessage type="loading" message="Carregando página..." /></div>}>
+          <Suspense
+            fallback={
+              <div className="container-page">
+                <StateMessage type="loading" message="Carregando página..." />
+              </div>
+            }
+          >
             <Outlet />
           </Suspense>
         </ErrorBoundary>
