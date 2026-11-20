@@ -57,9 +57,11 @@ No `.env`, `VITE_API_URL` é a URL da API Java (sem barra no final).
 ## Links
 
 - GitHub: https://github.com/gustavomrm/GS-FrontEnd
-- Vercel: https://SEU-PROJETO.vercel.app
+- Vercel: https://gs-front-end-plum.vercel.app
 - API Java: https://saida-assistida-api.onrender.com
-- YouTube: https://youtu.be/VIDEO
+- [Demonstração do Front-end integrado à API Java (YouTube)](https://youtu.be/ny4OAI_ogaw)
+- [Demonstração do Front-end no Google Drive, caso o YouTube esteja indisponível](https://drive.google.com/drive/folders/1L_29Yz1Hnjoy5trMiNGmr2gqAahrbVjB?usp=sharing)
+- [Pitch completo do projeto Saída Assistida (YouTube)](https://www.youtube.com/watch?v=dzke4LbJ9Ys)
 
 ## Integração com a API Java
 
